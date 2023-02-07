@@ -1,0 +1,32 @@
+include ( "ExternalProject" )
+
+# ASSIMP ##########################################
+ExternalProject_Add ( Install_Assimp
+    GIT_REPOSITORY
+        https://github.com/assimp/assimp
+    GIT_TAG
+        v5.0.1
+    GIT_SHALLOW
+        TRUE
+    SOURCE_DIR
+        ${CMAKE_BINARY_DIR}/Downloads/Assimp
+    INSTALL_DIR
+        ${ASSIMP_PATH}
+    CMAKE_ARGS
+        -DBUILD_SHARED_LIBS=FALSE
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DASSIMP_BUILD_TESTS=OFF
+        -DASSIMP_BUILD_ASSIMP_TOOLS=OFF
+        -DASSIMP_BUILD_SAMPLES=OFF
+        -DASSIMP_BUILD_ZLIB=TRUE
+        -DASSIMP_NO_EXPORT=TRUE
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        ${ASSIMP_CMAKE_FLAGS}
+        #-DASSIMP_BUILD_NO_IRR_IMPORTER=TRUE
+        #-DASSIMP_BUILD_NO_IRRMESH_IMPORTER=TRUE
+        #-DASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF
+        #-DASSIMP_BUILD_3DS_IMPORTER=TRUE
+        #-DASSIMP_BUILD_OBJ_IMPORTER=TRUE
+    EXCLUDE_FROM_ALL
+        TRUE
+    )

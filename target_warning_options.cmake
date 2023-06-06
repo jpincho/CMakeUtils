@@ -9,7 +9,7 @@ function ( target_warning_options target )
         set ( DISABLED_WARNINGS_STRING "/W0" )
         set ( DEFAULT_WARNINGS_STRING "/W3;/w34062" )
         set ( HIGH_WARNINGS_STRING "/W4;/w44062" )
-        set ( AS_ERRORS_STRING "/WX" )
+        set ( AS_ERRORS_STRING "/WX;/EHsc" )
         # CMake appends /W3 by default, and having /W3 followed by /W4 will result in 
         # cl : Command line warning D9025 : overriding '/W3' with '/W4'.  Since this is
         # a command line warning and not a compiler warning, it cannot be suppressed except

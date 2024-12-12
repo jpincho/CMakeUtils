@@ -27,11 +27,8 @@ if ( MSVC12 OR MSVC14 )
         list ( APPEND LIB_NAMES "assimp-vc142-mtd" )
     endif()
 else()
-    if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-        set ( LIB_NAMES "assimpd" )
-    else ()
-        set ( LIB_NAMES "assimp" )
-    endif()
+    set ( LIB_NAMES "assimpd" )
+    list ( APPEND LIB_NAMES "assimp" )
 endif()
 
 find_library ( ASSIMP_LIBRARY

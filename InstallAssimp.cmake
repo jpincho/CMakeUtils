@@ -5,7 +5,7 @@ ExternalProject_Add ( Install_Assimp
     GIT_REPOSITORY
         https://github.com/assimp/assimp
     GIT_TAG
-        v5.0.1
+        v5.4.3
     GIT_SHALLOW
         TRUE
     SOURCE_DIR

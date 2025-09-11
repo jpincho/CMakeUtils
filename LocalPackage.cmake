@@ -4,11 +4,37 @@ cmake_minimum_required ( VERSION 3.10 )
 
 # make sure this module is only included once per project
 if ( NOT LOCAL_PACKAGE_FIRST_PROJECT )
+    message ( STATUS "Configuring local package system")
     set ( LOCAL_CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "Location for LocalPackage to find CMake modules" )
     set ( LOCAL_PACKAGE_FIRST_PROJECT ${PROJECT_NAME} CACHE INTERNAL "" )
     set ( LOCAL_PACKAGE_INSTALL_LOCATION "${CMAKE_BINARY_DIR}/Dependencies" CACHE INTERNAL "Location where to search and install all local packages")
     set ( LOCAL_PACKAGE_USE_SYSTEM TRUE CACHE INTERNAL "Allow system packages to be used" )
     option ( LOCAL_PACKAGE_USE_SYSTEM "Allow system packages to be used" TRUE )
+    set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/output/bin" CACHE INTERNAL "" )
+    set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/output/lib" CACHE INTERNAL "")
+    set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/output/bin" CACHE INTERNAL "")
+endif()
+
+if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_FIRST_PROJECT}" )
+    list ( APPEND CMAKE_MODULE_PATH ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/cmake )
+
+    list ( APPEND PATHS_TO_SCAN_FOR_CMAKE "${LOCAL_PACKAGE_INSTALL_LOCATION}/lib/cmake" )
+    list ( APPEND PATHS_TO_SCAN_FOR_CMAKE "${LOCAL_PACKAGE_INSTALL_LOCATION}/share" )
+
+    foreach ( PATH_ITERATOR ${PATHS_TO_SCAN_FOR_CMAKE} )
+        message ( STATUS "Iterating ${PATH_ITERATOR}" )
+        file ( GLOB CMAKE_SUBFOLDERS LIST_DIRECTORIES TRUE "${PATH_ITERATOR}/*" )
+        foreach ( SUB_DIR_ITERATOR ${CMAKE_SUBFOLDERS} )
+            if ( IS_DIRECTORY ${SUB_DIR_ITERATOR} )
+                message ( STATUS "Adding ${SUB_DIR_ITERATOR}")
+                list ( APPEND CMAKE_MODULE_PATH "${SUB_DIR_ITERATOR}" )
+            endif()
+        endforeach()
+    endforeach()
+
+    list ( APPEND CMAKE_PREFIX_PATH ${CMAKE_MODULE_PATH} )
+    list ( REMOVE_DUPLICATES CMAKE_MODULE_PATH )
+    #message ( STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
 endif()
 
 #message ( STATUS "Master - ${LOCAL_PACKAGE_FIRST_PROJECT} Current - ${PROJECT_NAME} CMake modules - ${LOCAL_CMAKE_MODULE_PATH} Install - ${LOCAL_PACKAGE_INSTALL_LOCATION}")

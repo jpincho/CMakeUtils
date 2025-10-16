@@ -9,7 +9,7 @@ ExternalProject_Add ( Install_cglm
     SOURCE_DIR
         ${CMAKE_BINARY_DIR}/Downloads/cglm
     INSTALL_DIR
-        ${GLM_PATH}
+        ${CGLM_PATH}
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}

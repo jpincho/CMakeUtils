@@ -5,8 +5,10 @@ ExternalProject_Add ( Install_glfw3
     GIT_REPOSITORY
         https://github.com/glfw/glfw
     GIT_TAG
-        3.3.3
+        3.4
     GIT_SHALLOW 
+        TRUE
+    GIT_PROGRESS 
         TRUE
     UPDATE_COMMAND
         ""

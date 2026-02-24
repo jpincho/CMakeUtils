@@ -2,11 +2,13 @@ cmake_minimum_required ( VERSION 3.10 )
 
 # Macros for finding and installing packages
 
-# make sure this module is only included once per project
-if ( NOT LOCAL_PACKAGE_FIRST_PROJECT )
-    message ( STATUS "Configuring local package system")
+get_directory_property ( HAS_PARENT PARENT_DIRECTORY )
+
+if (( NOT HAS_PARENT ) OR ( NOT LOCAL_PACKAGE_MAIN_PROJECT ))
+    # if this is the topmost project, assume everything from here
+    message ( STATUS "Configuring local package system for ${PROJECT_NAME}")
     set ( LOCAL_CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "Location for LocalPackage to find CMake modules" )
-    set ( LOCAL_PACKAGE_FIRST_PROJECT ${PROJECT_NAME} CACHE INTERNAL "" )
+    set ( LOCAL_PACKAGE_MAIN_PROJECT ${PROJECT_NAME} CACHE INTERNAL "" )
     set ( LOCAL_PACKAGE_INSTALL_LOCATION "${CMAKE_BINARY_DIR}/Dependencies" CACHE INTERNAL "Location where to search and install all local packages")
     set ( LOCAL_PACKAGE_USE_SYSTEM TRUE CACHE INTERNAL "Allow system packages to be used" )
     option ( LOCAL_PACKAGE_USE_SYSTEM "Allow system packages to be used" TRUE )
@@ -15,7 +17,7 @@ if ( NOT LOCAL_PACKAGE_FIRST_PROJECT )
     set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/output/bin" CACHE INTERNAL "")
 endif()
 
-if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_FIRST_PROJECT}" )
+if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_MAIN_PROJECT}" )
     list ( APPEND CMAKE_MODULE_PATH ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/cmake )
 
     list ( APPEND PATHS_TO_SCAN_FOR_CMAKE "${LOCAL_PACKAGE_INSTALL_LOCATION}/lib/cmake" )
@@ -37,10 +39,10 @@ if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_FIRST_PROJECT}" )
     #message ( STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
 endif()
 
-#message ( STATUS "Master - ${LOCAL_PACKAGE_FIRST_PROJECT} Current - ${PROJECT_NAME} CMake modules - ${LOCAL_CMAKE_MODULE_PATH} Install - ${LOCAL_PACKAGE_INSTALL_LOCATION}")
+#message ( STATUS "Master - ${LOCAL_PACKAGE_MAIN_PROJECT} Current - ${PROJECT_NAME} CMake modules - ${LOCAL_CMAKE_MODULE_PATH} Install - ${LOCAL_PACKAGE_INSTALL_LOCATION}")
 
 function ( set_local_package_install_location NEW_PACKAGE_INSTALL_LOCATION )
-    if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_FIRST_PROJECT}" )
+    if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_MAIN_PROJECT}" )
         message ( STATUS "Setting local package install location to ${NEW_PACKAGE_INSTALL_LOCATION}" )
         set ( LOCAL_PACKAGE_INSTALL_LOCATION "${NEW_PACKAGE_INSTALL_LOCATION}" CACHE INTERNAL "Location where to search and install all local packages")
     endif()
@@ -92,7 +94,7 @@ endfunction()
 
 macro ( install_local_packages )
     if ( TARGET BuildLocalPackages )
-        if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_FIRST_PROJECT}" )
+        if ( "${PROJECT_NAME}" STREQUAL "${LOCAL_PACKAGE_MAIN_PROJECT}" )
             message ( STATUS "Installing local packages..." )
         endif()
         return()

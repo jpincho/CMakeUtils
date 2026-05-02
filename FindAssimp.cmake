@@ -48,6 +48,7 @@ find_library ( ASSIMP_LIBRARY
 
 list ( APPEND ASSIMP_INCLUDE_DIRS ${ASSIMP_INCLUDE_DIR} )
 list ( APPEND ASSIMP_LIBRARIES ${ASSIMP_LIBRARY} )
+list ( APPEND ASSIMP_LIBRARIES stdc++ ) # Assimp is a C++ library, so we need to link against the C++ standard library.
 
 if ( ASSIMP_LIBRARY )
     get_filename_component ( OWNING_DIRECTORY ${ASSIMP_LIBRARY} DIRECTORY )

@@ -1,6 +1,6 @@
 include ( "Helpers" )
 
-FindModuleStart( Assimp ALLOW_SYSTEM_LIBS )
+FindModuleStart( assimp ALLOW_SYSTEM_LIBS )
 
 #message ( STATUS "Searching for ASSIMP header in ${ASSIMP_INCLUDE_SEARCH_PATHS} with suffixes ${ASSIMP_INCLUDE_SEARCH_PATH_SUFFIXES}")
 #message ( STATUS "Searching for ASSIMP library in ${ASSIMP_LIBRARY_SEARCH_PATHS} with suffixes ${ASSIMP_LIBRARY_SEARCH_PATH_SUFFIXES}")
@@ -8,6 +8,7 @@ FindModuleStart( Assimp ALLOW_SYSTEM_LIBS )
 find_path ( ASSIMP_INCLUDE_DIR
     NAMES
         assimp/Importer.hpp
+        assimp/cimport.h
     PATH_SUFFIXES
         ${ASSIMP_INCLUDE_SEARCH_PATH_SUFFIXES}
     PATHS
@@ -25,23 +26,26 @@ if(MSVC)
         list ( APPEND LIB_NAMES "assimp-vc143-mtd" )
     endif()
 else()
-    set ( LIB_NAMES "assimpd" )
-    list ( APPEND LIB_NAMES "assimp" )
+    set ( LIB_NAMES "assimp" )
+    list ( APPEND LIB_NAMES "assimpd" )
+endif()
+
+# Merge with library names from pkg-config
+if ( ASSIMP_LIBRARY_NAMES )
+    list ( APPEND LIB_NAMES ${ASSIMP_LIBRARY_NAMES} )
 endif()
 
 find_library ( ASSIMP_LIBRARY
     NAMES
         ${LIB_NAMES}
-        ${ASSIMP_LIBRARY_NAMES}
     PATH_SUFFIXES
         ${ASSIMP_LIBRARY_SEARCH_PATH_SUFFIXES}
     PATHS
-        ${CMAKE_LIBRARY_PATH}
-        ${CMAKE_INSTALL_PREFIX}
         ${ASSIMP_LIBRARY_SEARCH_PATHS}
     )
 
 #message ( STATUS "LIB_NAMES - ${LIB_NAMES}" )
+#message ( STATUS "ASSIMP_LIBRARY_NAMES - ${ASSIMP_LIBRARY_NAMES}" )
 #message ( STATUS "FindAssimp.cmake - ASSIMP_LIBRARY - ${ASSIMP_LIBRARY}")
 #message ( STATUS "FindAssimp.cmake - ASSIMP_INCLUDE_DIR - ${ASSIMP_INCLUDE_DIR}")
 #message ( STATUS "FindAssimp.cmake - LIB_NAMES - ${LIB_NAMES}")
@@ -77,4 +81,4 @@ if ( ASSIMP_LIBRARY )
 endif()
 
 include ( FindPackageHandleStandardArgs )
-find_package_handle_standard_args ( Assimp DEFAULT_MSG ASSIMP_LIBRARIES ASSIMP_INCLUDE_DIRS )
+find_package_handle_standard_args ( assimp DEFAULT_MSG ASSIMP_LIBRARIES ASSIMP_INCLUDE_DIRS )
